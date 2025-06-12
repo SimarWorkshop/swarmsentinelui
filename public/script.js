@@ -10,7 +10,7 @@ let agentMessageCounts = {
 let barChart = new Chart(barCtx, {
   type: "bar",
   data: {
-    labels: ["Agent 1", "Agent 2", "Agent 3"],
+    labels: ["Threat Detector", "IAM Analyzer", "S3 Security Analyzer"],
     datasets: [{
       label: "Risk Count",
       data: [0, 0, 0],
@@ -31,7 +31,7 @@ let barChart = new Chart(barCtx, {
 let pieChart = new Chart(pieCtx, {
   type: "pie",
   data: {
-    labels: ["Public Buckets", "Unencrypted Buckets", "Compliant Buckets"],
+    labels: ["Threat Detector", "IAM Analyzer", "S3 Security Analyzer"],
     datasets: [{
       data: [0, 0, 0],
       backgroundColor: ["#6b0f1a", "#112d4e", "#2e2e2e"]
@@ -58,23 +58,23 @@ function detectAgent(flatData) {
 function updateCharts(flatData, agent) {
   if (!agent) return;
 
-  // Increment count
+  // Increment message count
   agentMessageCounts[agent]++;
   const idx = { agent1: 0, agent2: 1, agent3: 2 }[agent];
+
+  // Update bar chart (risk count per agent)
   barChart.data.datasets[0].data[idx] = agentMessageCounts[agent];
   barChart.update();
 
-  // Update pie chart if Agent 1
-  if (agent === "agent1") {
-    pieChart.data.datasets[0].data = [
-      flatData.public_buckets || 0,
-      flatData.unencrypted_buckets || 0,
-      flatData.compliant_buckets || 0
-    ];
-    pieChart.update();
-  }
+  // Update pie chart (message count per agent)
+  pieChart.data.datasets[0].data = [
+    agentMessageCounts.agent1,
+    agentMessageCounts.agent2,
+    agentMessageCounts.agent3
+  ];
+  pieChart.update();
 
-  // Append to section
+  // Append incoming data to the appropriate agent section
   const section = document.getElementById(`${agent}-details`);
   if (section) {
     const pre = document.createElement("pre");
@@ -84,7 +84,7 @@ function updateCharts(flatData, agent) {
   }
 }
 
-// WebSocket
+// WebSocket connection
 const socket = new WebSocket("wss://swarmsentinelui.onrender.com");
 
 socket.onmessage = (event) => {
