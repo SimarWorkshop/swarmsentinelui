@@ -1,0 +1,12 @@
+{
+  "name": "swarm-sentinel-dashboard",
+  "version": "1.0.0",
+  "description": "Dashboard for AI security agents",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
