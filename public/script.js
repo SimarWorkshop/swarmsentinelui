@@ -49,7 +49,7 @@ let pieChart = new Chart(pieCtx, {
 });
 
 function detectAgent(flatData) {
-  if (flatData.public_buckets !== undefined) return "agent1";
+  if (flatData.model === "CloudTrail Threat Detection") return "agent1";
   if (flatData.summary && flatData.suggestions) return "agent2";
   if (flatData.bucketAnalysis) return "agent3";
   return null;
