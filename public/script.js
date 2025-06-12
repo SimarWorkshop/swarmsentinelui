@@ -8,7 +8,7 @@ let barChart = new Chart(barCtx, {
     datasets: [{
       label: "Risk Level",
       data: [0, 0, 0],
-      backgroundColor: ["#8b0000", "#002b5b", "#333333"] // Dark red, navy, steel
+      backgroundColor: ["#8b0000", "#002b5b", "#333333"]
     }]
   },
   options: {
@@ -36,7 +36,7 @@ let pieChart = new Chart(pieCtx, {
     labels: ["Public Buckets", "Unencrypted Buckets", "Compliant Buckets"],
     datasets: [{
       data: [1, 1, 1],
-      backgroundColor: ["#6b0f1a", "#112d4e", "#2e2e2e"] // Muted dark red, deep navy, graphite
+      backgroundColor: ["#4d1c1c", "#1b2d4f", "#2e2e2e"] // darker and muted tones
     }]
   },
   options: {
@@ -78,7 +78,7 @@ function updateCharts(data) {
 
 setInterval(async () => {
   try {
-    const res = await fetch("https://your-render-url.com/api/swarm-data"); // Replace with your actual Render URL
+    const res = await fetch("/api/swarm-data");
     const json = await res.json();
     updateCharts(json);
   } catch (err) {
