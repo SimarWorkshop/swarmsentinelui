@@ -36,7 +36,7 @@ let pieChart = new Chart(pieCtx, {
     labels: ["Public Buckets", "Unencrypted Buckets", "Compliant Buckets"],
     datasets: [{
       data: [1, 1, 1],
-      backgroundColor: ["#4d1c1c", "#1b2d4f", "#2e2e2e"] // darker and muted tones
+      backgroundColor: ["#6b0f1a", "#112d4e", "#2e2e2e"]
     }]
   },
   options: {
@@ -52,7 +52,6 @@ let pieChart = new Chart(pieCtx, {
   }
 });
 
-// Real-time data update
 function updateCharts(data) {
   barChart.data.datasets[0].data = [
     data.agent1.risk_level || 0,
@@ -76,21 +75,18 @@ function updateCharts(data) {
   });
 }
 
-setInterval(async () => {
-  try {
-    const res = await fetch("/api/swarm-data");
-    const json = await res.json();
-    updateCharts(json);
-  } catch (err) {
-    console.error("Failed to fetch data", err);
-  }
-}, 5000);
+// --- WebSocket connection to backend
+const socket = new WebSocket("wss://swarmsentinelui.onrender.com");
 
-document.querySelectorAll(".agent-card").forEach(card => {
-  card.addEventListener("click", () => {
-    const details = card.querySelector(".agent-details");
-    if (details) {
-      details.style.display = details.style.display === "block" ? "none" : "block";
-    }
-  });
-});
+socket.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  updateCharts(data);
+};
+
+socket.onerror = (err) => {
+  console.error("WebSocket error:", err);
+};
+
+socket.onclose = () => {
+  console.warn("WebSocket disconnected. Attempting reconnection...");
+};

@@ -1,21 +1,39 @@
-const express = require('express');
-const path = require('path');
-const cors = require('cors'); // Import CORS
+const express = require("express");
+const WebSocket = require("ws");
+const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Enable CORS for all routes (you can customize origin if needed)
-app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
 
-// Serve static files from "public"
-app.use(express.static(path.join(__dirname, 'public')));
+const server = app.listen(PORT, () =>
+  console.log(`Server running at http://localhost:${PORT}`)
+);
 
-// Fallback to index.html for all non-API routes (e.g., React routing)
-app.get('/', (_req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+const wss = new WebSocket.Server({ server });
+
+let clients = [];
+
+wss.on("connection", (ws) => {
+  clients.push(ws);
+  console.log("WebSocket connected:", clients.length);
+
+  ws.on("close", () => {
+    clients = clients.filter((c) => c !== ws);
+    console.log("WebSocket disconnected:", clients.length);
+  });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.post("/send-alert", (req, res) => {
+  const alertData = req.body;
+
+  clients.forEach((client) => {
+    if (client.readyState === WebSocket.OPEN) {
+      client.send(JSON.stringify(alertData));
+    }
+  });
+
+  res.status(200).json({ status: "Delivered to WebSocket clients" });
 });
