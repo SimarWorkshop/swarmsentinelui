@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Swarm Sentinel</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Swarm Sentinel</h1>
+  </header>
+
+  <main>
+    <section class="dashboard">
+      <div class="chart-container">
+        <canvas id="barChart"></canvas>
+      </div>
+      <div class="chart-container">
+        <canvas id="pieChart"></canvas>
+      </div>
+    </section>
+
+    <section class="agents">
+      <div class="agent-card" id="agent1-card">
+        <h2>Threat Detection</h2>
+        <div class="agent-details" id="agent1-details"></div>
+      </div>
+      <div class="agent-card" id="agent2-card">
+        <h2>IAM Analyzer</h2>
+        <div class="agent-details" id="agent2-details"></div>
+      </div>
+      <div class="agent-card" id="agent3-card">
+        <h2>S3 Security Analyzer</h2>
+        <div class="agent-details" id="agent3-details"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
